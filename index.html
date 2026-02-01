@@ -47,13 +47,14 @@
         #yes {
             background: #ff4d6d;
             color: white;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 40%;
             top: 0;
         }
 
         #no {
             background: #ccc;
+            left: 60%;
+            top: 0;
         }
 
         #pingu {
@@ -85,7 +86,7 @@
 <body>
 
 <div class="card" id="card">
-    <h1>💘 Will you be my Valentine ? 💕💖</h1>
+    <h1>💘 Alexandra, will you be my Valentine ? 💕</h1>
     <div class="buttons">
         <button id="yes">OUI 💖</button>
         <button id="no">NON 😭</button>
@@ -99,48 +100,49 @@ const noBtn = document.getElementById("no");
 const pingu = document.getElementById("pingu");
 const card = document.getElementById("card");
 
-// Déplacement continu du NON autour du OUI
-let angle = 0; // angle initial
-const radiusX = 120; // distance horizontale
-const radiusY = 60;  // distance verticale
-const speed = 0.05; // vitesse
-
-function moveNoAroundYes() {
-    const rectYes = yesBtn.getBoundingClientRect();
-    const centerX = rectYes.left + rectYes.width/2 - noBtn.offsetWidth/2;
-    const centerY = rectYes.top + rectYes.height/2 - noBtn.offsetHeight/2;
-
-    const x = centerX + radiusX * Math.cos(angle);
-    const y = centerY + radiusY * Math.sin(angle);
-
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-
-    angle += speed;
-    requestAnimationFrame(moveNoAroundYes);
-}
-
-// Lancer le mouvement
-moveNoAroundYes();
-
-// Confettis
+// --- CONFETTIS ---
 function createConfetti() {
     const confetti = document.createElement("div");
     confetti.classList.add("confetti");
     confetti.style.left = Math.random() * window.innerWidth + "px";
-    confetti.style.backgroundColor = "#ff4d6d"; // rouge cœur
+    const colors = ["#ff4d6d","#ff66a3","#ff9999","#ffb3b3","#ff1a75"];
+    confetti.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
     confetti.style.animationDuration = (Math.random()*2 + 3) + "s";
     document.body.appendChild(confetti);
     setTimeout(() => confetti.remove(), 5000);
 }
 
-// Bouton OUI
+// --- BOUTON OUI ---
 yesBtn.addEventListener("click", () => {
     card.querySelector("h1").innerText = "NOOT NOOT 💕💖";
     document.querySelector(".buttons").style.display = "none";
     pingu.style.display = "block";
     setTimeout(() => pingu.style.transform = "scale(1)", 10);
     for(let i=0;i<100;i++) setTimeout(createConfetti, i*30);
+});
+
+// --- BOUTON NON ---
+noBtn.addEventListener("click", () => {
+    // Dès qu'elle clique sur NON, on lance le mouvement autour du OUI
+    let angle = 0;
+    const radiusX = 100;
+    const radiusY = 50;
+
+    const rectYes = yesBtn.getBoundingClientRect();
+
+    const centerX = rectYes.left + rectYes.width/2 - noBtn.offsetWidth/2;
+    const centerY = rectYes.top + rectYes.height/2 - noBtn.offsetHeight/2;
+
+    function rotateNo() {
+        const x = centerX + radiusX * Math.cos(angle);
+        const y = centerY + radiusY * Math.sin(angle);
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+        angle += 0.05;
+        requestAnimationFrame(rotateNo);
+    }
+
+    rotateNo();
 });
 </script>
 
