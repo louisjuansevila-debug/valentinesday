@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Valentine 💘</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            overflow: hidden;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            position: relative;
+            height: 120px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            position: absolute;
+        }
+
+        #yes {
+            background: #ff4d6d;
+            color: white;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+        }
+
+        #no {
+            background: #ccc;
+        }
+
+        #pingu {
+            display: none;
+            margin-top: 20px;
+            width: 220px;
+            transform: scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            top: -10px;
+            z-index: 2;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="card">
+    <h1>💘 Will you be my Valentine ? 💕💖</h1>
+    <div class="buttons">
+        <button id="yes">OUI 💖</button>
+        <button id="no">NON 😭</button>
+    </div>
+    <img id="pingu" src="pingu.png" alt="Pingu amoureux">
+</div>
+
+<script>
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const pingu = document.getElementById("pingu");
+const card = document.getElementById("card");
+
+// Déplacement continu du NON autour du OUI
+let angle = 0; // angle initial
+const radiusX = 120; // distance horizontale
+const radiusY = 60;  // distance verticale
+const speed = 0.05; // vitesse
+
+function moveNoAroundYes() {
+    const rectYes = yesBtn.getBoundingClientRect();
+    const centerX = rectYes.left + rectYes.width/2 - noBtn.offsetWidth/2;
+    const centerY = rectYes.top + rectYes.height/2 - noBtn.offsetHeight/2;
+
+    const x = centerX + radiusX * Math.cos(angle);
+    const y = centerY + radiusY * Math.sin(angle);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    angle += speed;
+    requestAnimationFrame(moveNoAroundYes);
+}
+
+// Lancer le mouvement
+moveNoAroundYes();
+
+// Confettis
+function createConfetti() {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+    confetti.style.left = Math.random() * window.innerWidth + "px";
+    confetti.style.backgroundColor = "#ff4d6d"; // rouge cœur
+    confetti.style.animationDuration = (Math.random()*2 + 3) + "s";
+    document.body.appendChild(confetti);
+    setTimeout(() => confetti.remove(), 5000);
+}
+
+// Bouton OUI
+yesBtn.addEventListener("click", () => {
+    card.querySelector("h1").innerText = "NOOT NOOT 💕💖";
+    document.querySelector(".buttons").style.display = "none";
+    pingu.style.display = "block";
+    setTimeout(() => pingu.style.transform = "scale(1)", 10);
+    for(let i=0;i<100;i++) setTimeout(createConfetti, i*30);
+});
+</script>
+
+</body>
+</html>
